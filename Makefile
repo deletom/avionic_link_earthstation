@@ -25,11 +25,11 @@ DEPFLAGS = -MMD
 
 LIBFLAGS =  rcs
 
-ALL_INCLUDE = . ./lib/mavlink
+ALL_INCLUDE = . ./lib/mavlink ./lib/drivers/src ./lib/drivers/include
 
-ALL_LIBS = 
+ALL_LIBS = hiredis
 
-PATHS = . 
+PATHS = . ./lib/mavlink ./lib/drivers/src ./lib/drivers/include
 
 SOURCES = $(foreach dir, $(PATHS), $(wildcard $(dir)/*.$(PS)))
 

@@ -1,98 +1,95 @@
 /**
- CLIENT
+ * Envoie des informations vers la station sol
+ * Au format mavlink
  */
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h> /* close */
-#include <netdb.h> /* gethostbyname */
-#include "../lib/mavlink/standard/mavlink.h"
 
+#include "lib/drivers/include/link.h"
 
-#define INVALID_SOCKET -1
-#define SOCKET_ERROR -1
-#define closesocket(s) close(s)
-typedef int SOCKET;
-typedef struct sockaddr_in SOCKADDR_IN;
-typedef struct sockaddr SOCKADDR;
-typedef struct in_addr IN_ADDR;
+/**
+ * Définition des informations de la station sol
+ */
 
-#define CRLF  "\r\n"
-#define PORT  1977
-
-#define BUF_SIZE 2041
-
-#define IP_HOST "127.0.0.1"
 
 int main(void) {
-    SOCKET sock;
+
+    // Création de la structure global à la liaison
+    GlobalDataLink structDataLink;
+
+    // Initialisation des informations communes à l'ensemble des liaisons
+    getInitGlobal(&structDataLink);
+
+    printf("Type Link: %d \n", structDataLink.typeLink);
+
+    // Envoi des données par Socket
+    if (structDataLink.typeLink == 1) {
         
-    struct hostent *hostinfo = NULL;
-    
-    SOCKADDR_IN to = {0};
-    socklen_t tosize = sizeof to;
-    
-    const char *hostname = IP_HOST;
-    int n = 0;
-    
-    uint8_t buffer[BUF_SIZE];
-    mavlink_message_t msg;
-    uint16_t len;
+       /* // Initialisation des informations Socket
+        SocketDataLink structDataLinkSocket;
+        getInitSocket(&structDataLinkSocket, &structDataLink);
+        return sendDataBySocket(&structDataLinkSocket, &structDataLink);*/
 
-    sock = socket(AF_INET, SOCK_DGRAM, 0);
-    if (sock == INVALID_SOCKET) {
-        perror("socket()");
-        exit(errno);
+    // Envoi des données via les modules de télémétrie
+    } else if (structDataLink.typeLink == 2) {
+
+
     }
 
-    hostinfo = gethostbyname(hostname);
-    if (hostinfo == NULL) {
-        fprintf(stderr, "Unknown host %s.\n", hostname);
-        exit(EXIT_FAILURE);
-    }
+    /* int n = 0;
+     uint8_t buffer[BUF_SIZE];
+     mavlink_message_t msg;
+     uint16_t len;*/
 
-    to.sin_addr = *(IN_ADDR *) hostinfo->h_addr;
-    to.sin_port = htons(PORT);
-    to.sin_family = AF_INET;
+    /* sock = socket(AF_INET, SOCK_DGRAM, 0);
+     if (sock == INVALID_SOCKET) {
+         perror("socket()");
+         exit(errno);
+     }
 
-    while (1) {
+     hostinfo = gethostbyname(hostname);
+     if (hostinfo == NULL) {
+         fprintf(stderr, "Unknown host %s.\n", hostname);
+         exit(EXIT_FAILURE);
+     }
 
-        /* Envoi Heartbeat */
-        mavlink_msg_heartbeat_pack(1, 200, &msg, MAV_TYPE_HELICOPTER, MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_ARMED, 0, MAV_STATE_ACTIVE);
-        len = mavlink_msg_to_send_buffer(buffer, &msg);
+     to.sin_addr = *(IN_ADDR *) hostinfo->h_addr;
+     to.sin_port = htons(PORT);
+     to.sin_family = AF_INET;
 
-        if (sendto(sock, buffer, len, 0, (SOCKADDR *) & to, tosize) < 0) {
-            perror("sendto()");
-            exit(errno);
-        }
+     while (1) {
 
-        /* Envoi Statut */
-        mavlink_msg_sys_status_pack(1, 200, &msg, 0, 0, 0, 500, 11000, -1, -1, 0, 0, 0, 0, 0, 0);
-        len = mavlink_msg_to_send_buffer(buffer, &msg);
+         // Envoi Heartbeat
+         mavlink_msg_heartbeat_pack(1, 200, &msg, MAV_TYPE_HELICOPTER, MAV_AUTOPILOT_GENERIC, MAV_MODE_GUIDED_ARMED, 0, MAV_STATE_ACTIVE);
+         len = mavlink_msg_to_send_buffer(buffer, &msg);
 
-        if (sendto(sock, buffer, len, 0, (SOCKADDR *) & to, tosize) < 0) {
-            perror("sendto()");
-            exit(errno);
-        }
+         if (sendto(sock, buffer, len, 0, (SOCKADDR *) & to, tosize) < 0) {
+             perror("sendto()");
+             exit(errno);
+         }
 
-        /* Reception acquittement du serveur */
-        if ((n = recvfrom(sock, buffer, sizeof buffer - 1, 0, (SOCKADDR *) & to, &tosize)) < 0) {
-            perror("recvfrom()");
-            exit(errno);
-        }
+         // Envoi Statut
+         mavlink_msg_sys_status_pack(1, 200, &msg, 0, 0, 0, 500, 11000, -1, -1, 0, 0, 0, 0, 0, 0);
+         len = mavlink_msg_to_send_buffer(buffer, &msg);
 
-        buffer[n] = '\0';
+         if (sendto(sock, buffer, len, 0, (SOCKADDR *) & to, tosize) < 0) {
+             perror("sendto()");
+             exit(errno);
+         }
 
-        printf("buffer: %s \r\n", buffer);
-    }
+         // Reception acquittement du serveur
+         if ((n = recvfrom(sock, buffer, sizeof buffer - 1, 0, (SOCKADDR *) & to, &tosize)) < 0) {
+             perror("recvfrom()");
+             exit(errno);
+         }
+         buffer[n] = '\0';
 
-    closesocket(sock);
+         sleep(0.5);
+     }
 
+     closesocket(sock);*/
     return EXIT_SUCCESS;
 }
 
