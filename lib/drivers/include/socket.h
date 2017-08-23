@@ -8,14 +8,13 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-#include <errno.h>
-#include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <netdb.h>
+#include "link.h"
 
 //-----------------------------
 //----- DEFINE 		  -----
@@ -29,7 +28,7 @@ typedef struct sockaddr SOCKADDR;
 typedef struct in_addr IN_ADDR;
 
 #define CRLF  "\r\n"
-#define IP_HOST "127.0.0.1"
+#define IP_HOST "192.168.xxx.xxx"
 #define PORT  1977
 
 //-----------------------------
@@ -43,6 +42,7 @@ struct SocketDataLink {
     socklen_t tosize;
     struct hostent *hostinfo;
     const char *hostname;
+    int lenDataRec;
 };
 
 typedef struct GlobalDataLink GlobalDataLink;
@@ -52,7 +52,6 @@ typedef struct GlobalDataLink GlobalDataLink;
 //-----------------------------
 int getInitSocket(SocketDataLink *structDataLinkSocket, GlobalDataLink *structDataLink);
 int sendDataBySocket(SocketDataLink *structDataLinkSocket, GlobalDataLink *structDataLink);
-
 
 #endif /* SOCKET_H */
 
