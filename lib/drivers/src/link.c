@@ -7,7 +7,7 @@
  * @param structDataLink
  */
 void getInitGlobal(GlobalDataLink *structDataLink) {
-    
+
     // Connexion à Redis
     struct timeval timeout = {1, 500000}; // 1.5 seconds
     structDataLink->redisContext = redisConnectWithTimeout("127.0.0.1", 6379, timeout);
@@ -20,15 +20,8 @@ void getInitGlobal(GlobalDataLink *structDataLink) {
     // Récupération du type de connexion vers la station sol...
     structDataLink->redisReply = redisCommand(structDataLink->redisContext, "GET config_link_earth_station_type");
 
-    // ... socket : Liaison par socket http, uniquement via la liaison wifi.
-    if (structDataLink->redisReply->type == REDIS_REPLY_STRING && strcmp(structDataLink->redisReply->str, "socket") == 0) {
-        freeReplyObject(structDataLink->redisReply);
-        structDataLink->typeLink = 1;
-    // ... serial : Liaison par port série, via les modules de télémétrie
-    } else {
-        freeReplyObject(structDataLink->redisReply);
-        structDataLink->typeLink = 2;
-    }
+    freeReplyObject(structDataLink->redisReply);
+    structDataLink->typeLink = 2;
 }
 
 /**

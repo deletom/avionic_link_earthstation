@@ -21,7 +21,7 @@
 //-----------------------------
 #define INVALID_FILE NULL
 #define CRLF  "\r\n"
-#define PATH_INTERFACE "/dev/ttyUSB0"
+#define PATH_INTERFACE "/dev/serial/by-path/platform-3f980000.usb-usb-0:1.2:1.0-port0"
 
 //-----------------------------
 //----- STRUCTURE 	  -----

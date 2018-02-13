@@ -16,25 +16,14 @@ int main(void) {
     // Initialisation des informations communes à l'ensemble des liaisons
     getInitGlobal(&structDataLink);
 
-    // Envoi des données par Socket
-    if (structDataLink.typeLink == 1) {
-        printf("LINK : Type Socket \n");
-
-        // Initialisation des informations Socket
-        SocketDataLink structDataLinkSocket;
-        if (getInitSocket(&structDataLinkSocket, &structDataLink) == EXIT_SUCCESS) {
-            return sendDataBySocket(&structDataLinkSocket, &structDataLink);
-        }
-
-        // Envoi des données via les modules de télémétrie (serial)
-    } else if (structDataLink.typeLink == 2) {
-        printf("LINK : Type Telemetrie \n");
-
-        // Initialisation des informations Serial
-        SerialDataLink structDataLinkSerial;
-        if (getInitSerial(&structDataLinkSerial, &structDataLink) == EXIT_SUCCESS) {
-            return sendDataBySerial(&structDataLinkSerial, &structDataLink);
-        }
+    // Initialisation des informations Serial
+    SerialDataLink structDataLinkSerial;
+    
+    if (getInitSerial(&structDataLinkSerial, &structDataLink) != EXIT_FAILURE) {
+        return sendDataBySerial(&structDataLinkSerial, &structDataLink);
+        printf("LINK EARTHSTATION : INIT OK \r\n ");
+    } else {
+        printf("LINK EARTHSTATION : INIT KO \r\n ");
     }
 
     return EXIT_SUCCESS;

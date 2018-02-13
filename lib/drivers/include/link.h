@@ -9,9 +9,7 @@
 #include "hiredis/hiredis.h"
 
 // On inclut les différents drivers
-#include "./socket.h"
 #include "./serial.h"
-
 
 //-----------------------------
 //----- DEFINE 		  -----
