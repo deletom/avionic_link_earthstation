@@ -15,7 +15,7 @@ RELEASE_FLAGS = -O2 -D_PRINT_HANDLE_TIME_
 
 DEBUG_FLAGS = -pg -ggdb -D_DEBUG -D_PRINT_HANDLE_TIME_
 
-RELEASE	= sock_client
+RELEASE	= link
 
 DEBUG	= $(RELEASE)_debug
 

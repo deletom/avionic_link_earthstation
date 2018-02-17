@@ -13,12 +13,10 @@ int getInitSerial(SerialDataLink *structDataLinkSerial, GlobalDataLink *structDa
     structDataLinkSerial->openSerial = open(PATH_INTERFACE, O_RDWR | O_NOCTTY | O_NDELAY);
     
     if (structDataLinkSerial->openSerial == -1) {
-        printf("LINK EARTHSTATION - INITSERIAL : KO (Ouverture port) \r\n ");
         return EXIT_FAILURE;
     }
 
     if (tcgetattr(structDataLinkSerial->openSerial, &toptions) < 0) {
-        printf("LINK EARTHSTATION - INITSERIAL : KO (Recuperation des attributs) \r\n ");
         return EXIT_FAILURE;
     }
 
@@ -40,7 +38,6 @@ int getInitSerial(SerialDataLink *structDataLinkSerial, GlobalDataLink *structDa
     toptions.c_cc[VTIME] = 20;
 
     if (tcsetattr(structDataLinkSerial->openSerial, TCSANOW, &toptions) < 0) {
-        printf("LINK EARTHSTATION - INITSERIAL : KO (Recuperation des attributs options) \r\n ");
         return EXIT_FAILURE;
     }
 
