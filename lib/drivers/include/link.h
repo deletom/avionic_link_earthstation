@@ -26,12 +26,6 @@
 typedef struct GlobalDataLink GlobalDataLink;
 
 struct GlobalDataLink {
-    /* Type de liaison
-     * 1: Socket
-     * 2: Module télémétrie
-     */
-    int typeLink;
-
     /*
      * Pointeur vers la connexion Redis
      */

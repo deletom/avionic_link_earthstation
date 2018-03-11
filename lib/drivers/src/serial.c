@@ -11,7 +11,7 @@ int getInitSerial(SerialDataLink *structDataLinkSerial, GlobalDataLink *structDa
 
     // Ouverture de la connexion
     structDataLinkSerial->openSerial = open(PATH_INTERFACE, O_RDWR | O_NOCTTY | O_NDELAY);
-    
+
     if (structDataLinkSerial->openSerial == -1) {
         return EXIT_FAILURE;
     }
@@ -50,41 +50,42 @@ int getInitSerial(SerialDataLink *structDataLinkSerial, GlobalDataLink *structDa
  * @param structDataLink
  */
 int sendDataBySerial(SerialDataLink *structDataLinkSerial, GlobalDataLink *structDataLink) {
-    
-    while (1) {
-        int n = 0;
 
+    int returnWrite = 0;
+
+    while (1) {
+
+        // Envoi du HeartBeat 
         setDataMavlinkHeartBeat(structDataLink);
-        n = write(structDataLinkSerial->openSerial, structDataLink->buffer, structDataLink->len);
-        if (n == -1) {
-            perror("LINK sendDataBySerial: Erreur HeartBeat");
+        returnWrite = write(structDataLinkSerial->openSerial, structDataLink->buffer, structDataLink->len);
+        if (returnWrite == -1) {
+            perror("LINK: Erreur HeartBeat");
         }
-        sleep(1);
+        usleep(22000); 
 
         // Envoi Statut
         setDataMavlinkStatus(structDataLink);
-        n = write(structDataLinkSerial->openSerial, structDataLink->buffer, structDataLink->len);
-        if (n == -1) {
+        returnWrite = write(structDataLinkSerial->openSerial, structDataLink->buffer, structDataLink->len);
+        if (returnWrite == -1) {
             perror("LINK sendDataBySerial: Erreur Status");
         }
-        sleep(1);
+        usleep(22000);
 
         // Envoi Attitude
         setDataMavlinkAttitude(structDataLink);
-        n = write(structDataLinkSerial->openSerial, structDataLink->buffer, structDataLink->len);
-        if (n == -1) {
+        returnWrite = write(structDataLinkSerial->openSerial, structDataLink->buffer, structDataLink->len);
+        if (returnWrite == -1) {
             perror("LINK sendDataBySerial: Erreur Attitude");
         }
-        sleep(1);
+        usleep(22000);
 
         // Envoi Position
         setDataMavlinkPosition(structDataLink);
-        n = write(structDataLinkSerial->openSerial, structDataLink->buffer, structDataLink->len);
-        if (n == -1) {
+        returnWrite = write(structDataLinkSerial->openSerial, structDataLink->buffer, structDataLink->len);
+        if (returnWrite == -1) {
             perror("LINK sendDataBySerial: Erreur Position");
         }
-        sleep(1);
-        
+        usleep(22000);
     }
 
     return EXIT_SUCCESS;
